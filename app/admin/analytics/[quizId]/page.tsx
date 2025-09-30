@@ -114,10 +114,10 @@ export default function AnalyticsPage() {
     const lowCount = Math.round((lowPercent / 100) * total);
     const middleCount = total - topCount - lowCount;
 
-    // Slice into tiers, then randomize each tier
-    const topTier = sorted.slice(0, topCount).sort(() => Math.random() - 0.5);
-    const middleTier = sorted.slice(topCount, topCount + middleCount).sort(() => Math.random() - 0.5);
-    const lowTier = sorted.slice(topCount + middleCount).sort(() => Math.random() - 0.5);
+    // Slice into tiers, then sort alphabetically
+    const topTier = sorted.slice(0, topCount).sort((a, b) => a.applicant_name.localeCompare(b.applicant_name));
+    const middleTier = sorted.slice(topCount, topCount + middleCount).sort((a, b) => a.applicant_name.localeCompare(b.applicant_name));
+    const lowTier = sorted.slice(topCount + middleCount).sort((a, b) => a.applicant_name.localeCompare(b.applicant_name));
 
     setTiers({ top: topTier, middle: middleTier, low: lowTier });
   };
