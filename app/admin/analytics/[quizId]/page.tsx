@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ApplicantScore {
   applicant_id: string;
@@ -122,6 +123,28 @@ export default function AnalyticsPage() {
 
   const copyNames = (names: string[]) => {
     navigator.clipboard.writeText(names.join('\n'));
+  };
+
+  const handleDeleteVoter = async (voterEmail: string) => {
+    if (!confirm(`Delete all responses from ${voterEmail}?`)) return;
+
+    try {
+      const res = await fetch(`/api/quiz/${quizId}/delete-voter`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ voterEmail }),
+      });
+
+      if (res.ok) {
+        // Refresh data
+        fetchAnalytics();
+        fetchVoters();
+      } else {
+        setError('Failed to delete voter responses');
+      }
+    } catch (err) {
+      setError('Failed to delete voter responses');
+    }
   };
 
   if (loading) {
@@ -309,7 +332,7 @@ export default function AnalyticsPage() {
                       <TableRow>
                         <TableCell>Name</TableCell>
                         <TableCell>Email</TableCell>
-                        <TableCell>Submitted At</TableCell>
+                        <TableCell align="right">Actions</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -317,7 +340,15 @@ export default function AnalyticsPage() {
                         <TableRow key={index}>
                           <TableCell>{voter.voter_name}</TableCell>
                           <TableCell>{voter.voter_email}</TableCell>
-                          <TableCell>{new Date(voter.submitted_at).toLocaleString()}</TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              size="small"
+                              color="error"
+                              onClick={() => handleDeleteVoter(voter.voter_email)}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

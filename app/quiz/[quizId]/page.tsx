@@ -273,7 +273,7 @@ export default function QuizPage() {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#fafafa', py: { xs: 3, sm: 4 } }}>
-      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 3, sm: 3 } }}>
         <Typography
           variant="h4"
           align="center"
@@ -319,6 +319,8 @@ export default function QuizPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
+                    width: '100%',
+                    maxWidth: { xs: '100%', sm: 400 },
                   }}
                 >
               <Box
