@@ -307,9 +307,10 @@ export default function QuizPage() {
         </Alert>
       )}
 
-          <Grid container spacing={3} justifyContent="center" sx={{ maxWidth: 1200, mx: 'auto' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Grid container spacing={3} sx={{ maxWidth: 1200 }}>
             {filteredApplicants.map((applicant) => (
-              <Grid item xs={12} sm={6} lg={4} key={applicant.id} sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Grid item xs={12} sm={6} lg={4} key={applicant.id}>
                 <Card
                   elevation={3}
                   sx={{
@@ -319,8 +320,6 @@ export default function QuizPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
-                    width: '100%',
-                    maxWidth: { xs: '100%', sm: 400 },
                   }}
                 >
               <Box
@@ -375,7 +374,10 @@ export default function QuizPage() {
                       size="large"
                       sx={{
                         '& .MuiRating-icon': {
-                          fontSize: { xs: '2rem', sm: '2.5rem' },
+                          fontSize: { xs: '3rem', sm: '2.5rem' },
+                        },
+                        '& .MuiRating-iconEmpty': {
+                          fontSize: { xs: '3rem', sm: '2.5rem' },
                         },
                       }}
                     />
@@ -395,6 +397,7 @@ export default function QuizPage() {
               </Grid>
             ))}
           </Grid>
+        </Box>
 
         <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
           <Button

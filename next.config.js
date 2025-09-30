@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['dl.airtable.com', 'v5.airtableusercontent.com'],
+    domains: ['dl.airtable.com', 'v5.airtableusercontent.com', 'ruyzlitaeguvbfnyuvrn.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+      },
+    ],
   },
 }
 
