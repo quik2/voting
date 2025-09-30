@@ -14,19 +14,33 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { name } = await request.json();
+    const body = await request.json();
 
-    if (!name || !name.trim()) {
-      return NextResponse.json(
-        { error: 'Quiz name is required' },
-        { status: 400 }
-      );
+    // Build update object
+    const updates: any = {};
+    if (body.name !== undefined) {
+      if (!body.name.trim()) {
+        return NextResponse.json(
+          { error: 'Quiz name cannot be empty' },
+          { status: 400 }
+        );
+      }
+      updates.name = body.name;
+    }
+    if (body.selected_applicants !== undefined) {
+      if (!Array.isArray(body.selected_applicants) || body.selected_applicants.length === 0) {
+        return NextResponse.json(
+          { error: 'Quiz must have at least one applicant' },
+          { status: 400 }
+        );
+      }
+      updates.selected_applicants = body.selected_applicants;
     }
 
-    // Update quiz name
+    // Update quiz
     const { error } = await supabase
       .from('quizzes')
-      .update({ name })
+      .update(updates)
       .eq('id', quizId);
 
     if (error) {

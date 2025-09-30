@@ -41,6 +41,7 @@ export default function QuizzesTab() {
   const [newQuizName, setNewQuizName] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deletingQuiz, setDeletingQuiz] = useState<Quiz | null>(null);
+  const [editingQuizId, setEditingQuizId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchQuizzes();
@@ -77,7 +78,11 @@ export default function QuizzesTab() {
     router.push(`/admin/analytics/${quizId}`);
   };
 
-  const handleEditClick = (quiz: Quiz) => {
+  const handleEditClick = (quizId: string) => {
+    router.push(`/admin/quiz-settings/${quizId}`);
+  };
+
+  const handleNameDoubleClick = (quiz: Quiz) => {
     setEditingQuiz(quiz);
     setNewQuizName(quiz.name);
     setEditDialogOpen(true);
@@ -165,11 +170,15 @@ export default function QuizzesTab() {
             <Card elevation={3} sx={{ borderRadius: 3, display: 'flex', flexDirection: 'column', minHeight: 200 }}>
               <CardContent sx={{ p: 3, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 500, flex: 1 }}>
+                  <Typography
+                    variant="h5"
+                    sx={{ fontWeight: 500, flex: 1, cursor: 'pointer' }}
+                    onDoubleClick={() => handleNameDoubleClick(quiz)}
+                  >
                     {quiz.name}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    <IconButton size="small" onClick={() => handleEditClick(quiz)} color="primary">
+                    <IconButton size="small" onClick={() => handleEditClick(quiz.id)} color="primary">
                       <EditIcon fontSize="small" />
                     </IconButton>
                     <IconButton
