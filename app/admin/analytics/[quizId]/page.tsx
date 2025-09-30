@@ -110,8 +110,9 @@ export default function AnalyticsPage() {
     );
 
     const total = sorted.length;
-    const topCount = Math.ceil((topPercent / 100) * total);
-    const middleCount = Math.ceil((middlePercent / 100) * total);
+    const topCount = Math.round((topPercent / 100) * total);
+    const lowCount = Math.round((lowPercent / 100) * total);
+    const middleCount = total - topCount - lowCount;
 
     // Slice into tiers, then randomize each tier
     const topTier = sorted.slice(0, topCount).sort(() => Math.random() - 0.5);
