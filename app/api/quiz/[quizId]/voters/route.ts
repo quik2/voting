@@ -7,7 +7,8 @@ export async function GET(
 ) {
   const { quizId } = await params;
   try {
-    // Get all responses for this quiz
+    // Get all unique voters for this quiz by using DISTINCT on voter_email
+    // and selecting the most recent submission per voter
     const { data: responses, error } = await supabase
       .from('quiz_responses')
       .select('voter_name, voter_email, submitted_at')
@@ -19,15 +20,25 @@ export async function GET(
       return NextResponse.json({ voters: [] });
     }
 
-    // Get unique voters (in case someone voted multiple times before we added the check)
+    if (!responses || responses.length === 0) {
+      return NextResponse.json({ voters: [] });
+    }
+
+    // Get unique voters - keep the first occurrence (most recent due to ordering)
     const uniqueVotersMap = new Map<string, any>();
-    responses?.forEach(response => {
+    responses.forEach(response => {
       if (!uniqueVotersMap.has(response.voter_email)) {
-        uniqueVotersMap.set(response.voter_email, response);
+        uniqueVotersMap.set(response.voter_email, {
+          voter_name: response.voter_name,
+          voter_email: response.voter_email,
+          submitted_at: response.submitted_at
+        });
       }
     });
 
     const voters = Array.from(uniqueVotersMap.values());
+
+    console.log(`Quiz ${quizId}: Found ${responses.length} total responses from ${voters.length} unique voters`);
 
     return NextResponse.json({ voters });
   } catch (error: any) {

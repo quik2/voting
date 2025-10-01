@@ -322,25 +322,29 @@ export default function AnalyticsPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card sx={{ mt: 4 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  Voter Submissions
+                  Voter Submissions ({voters.length} total)
                 </Typography>
                 <TableContainer component={Paper}>
                   <Table size="small">
                     <TableHead>
                       <TableRow>
+                        <TableCell>#</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell>Email</TableCell>
+                        <TableCell>Submitted At</TableCell>
                         <TableCell align="right">Actions</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {voters.map((voter, index) => (
                         <TableRow key={index}>
+                          <TableCell>{index + 1}</TableCell>
                           <TableCell>{voter.voter_name}</TableCell>
                           <TableCell>{voter.voter_email}</TableCell>
+                          <TableCell>{new Date(voter.submitted_at).toLocaleString()}</TableCell>
                           <TableCell align="right">
                             <IconButton
                               size="small"
