@@ -26,6 +26,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -52,14 +54,18 @@ export default function ApplicantsTab() {
   const [order, setOrder] = useState<Order>('asc');
   const [nameListDialogOpen, setNameListDialogOpen] = useState(false);
   const [nameListText, setNameListText] = useState('');
+  const [useApplicationResponses, setUseApplicationResponses] = useState(false);
 
   useEffect(() => {
     fetchApplicants();
-  }, []);
+  }, [useApplicationResponses]);
 
   const fetchApplicants = async () => {
+    setLoading(true);
+    setSelectedIds(new Set()); // Clear selections when switching
     try {
-      const res = await fetch('/api/applicants');
+      const endpoint = useApplicationResponses ? '/api/application-responses' : '/api/applicants';
+      const res = await fetch(endpoint);
       const data = await res.json();
 
       if (!res.ok) {
@@ -189,6 +195,23 @@ export default function ApplicantsTab() {
           {error}
         </Alert>
       )}
+
+      <Box sx={{ mb: 3 }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={useApplicationResponses}
+              onChange={(e) => setUseApplicationResponses(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={
+            <Typography variant="body1">
+              {useApplicationResponses ? 'Showing: Application Responses' : 'Showing: All Applicants'}
+            </Typography>
+          }
+        />
+      </Box>
 
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>

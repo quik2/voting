@@ -23,3 +23,16 @@ export async function getApplicants(): Promise<Applicant[]> {
     photo: record.get('photo') as string || '',
   }));
 }
+
+export async function getApplicationResponses(): Promise<Applicant[]> {
+  const records = await base('Application Responses')
+    .select()
+    .all();
+
+  return records.map((record) => ({
+    id: record.id,
+    applicant_name: record.get('applicant_name') as string,
+    year: record.get('year') as string,
+    photo: record.get('photo') as string || '',
+  }));
+}
