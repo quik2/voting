@@ -123,12 +123,19 @@ export default function QuizPage() {
   const handleSubmit = async () => {
     if (!quiz) return;
 
-    // Check if all applicants have been rated (including null for "skip")
-    const allRated = quiz.selected_applicants.every((app) =>
-      ratings.hasOwnProperty(app.id)
+    // Find the first unanswered applicant
+    const firstUnanswered = quiz.selected_applicants.find((app) =>
+      !ratings.hasOwnProperty(app.id)
     );
 
-    if (!allRated) {
+    if (firstUnanswered) {
+      // Scroll to the first unanswered applicant
+      const element = document.getElementById(`applicant-${firstUnanswered.id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Highlight the card briefly
+        element.style.animation = 'pulse 1s ease-in-out';
+      }
       setError('Please provide a rating (or skip) for all applicants before submitting');
       return;
     }
@@ -312,6 +319,7 @@ export default function QuizPage() {
             {filteredApplicants.map((applicant) => (
               <Grid item xs={12} sm={6} lg={4} key={applicant.id}>
                 <Card
+                  id={`applicant-${applicant.id}`}
                   elevation={3}
                   sx={{
                     borderRadius: 3,
@@ -320,6 +328,11 @@ export default function QuizPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
+                    '@keyframes pulse': {
+                      '0%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(25, 118, 210, 0.7)' },
+                      '50%': { transform: 'scale(1.02)', boxShadow: '0 0 0 10px rgba(25, 118, 210, 0)' },
+                      '100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(25, 118, 210, 0)' }
+                    }
                   }}
                 >
               <Box
@@ -404,7 +417,7 @@ export default function QuizPage() {
             variant="contained"
             size="large"
             onClick={handleSubmit}
-            disabled={submitting || ratedCount !== quiz.selected_applicants.length}
+            disabled={submitting}
             sx={{ minWidth: { xs: '100%', sm: 250 }, borderRadius: 2, maxWidth: 400 }}
           >
             {submitting ? 'Submitting...' : 'Submit Quiz'}
