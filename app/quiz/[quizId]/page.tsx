@@ -268,9 +268,9 @@ export default function QuizPage() {
   const filteredApplicants = quiz.selected_applicants
     .filter((app) => app.applicant_name.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
-      // First sort by class (Freshman first = highest year number)
+      // First sort by class (Senior first = lowest year number)
       if (a.year !== b.year) {
-        return b.year - a.year;
+        return a.year - b.year;
       }
       // Then sort alphabetically by first name within the same class
       const aFirstName = a.applicant_name.split(' ')[0].toLowerCase();
