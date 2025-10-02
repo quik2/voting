@@ -12,7 +12,7 @@ export async function GET(
       .from('quiz_responses')
       .select('*')
       .eq('quiz_id', quizId)
-      .range(0, 9999); // Ensure we get all responses
+      .limit(10000); // Ensure we get all responses
 
     if (error) {
       console.error('Supabase error:', error);

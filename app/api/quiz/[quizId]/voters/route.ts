@@ -7,20 +7,28 @@ export async function GET(
 ) {
   const { quizId } = await params;
   try {
-    // Get all unique voters for this quiz by using DISTINCT on voter_email
-    // and selecting the most recent submission per voter
-    // Use a large range to ensure we get all responses (not just the default limit)
+    // First, get count to understand scale
+    const { count, error: countError } = await supabase
+      .from('quiz_responses')
+      .select('*', { count: 'exact', head: true })
+      .eq('quiz_id', quizId);
+
+    console.log(`Quiz ${quizId}: Total responses in DB: ${count}`);
+
+    // Fetch ALL responses by using a very large limit parameter
     const { data: responses, error } = await supabase
       .from('quiz_responses')
       .select('voter_name, voter_email, submitted_at')
       .eq('quiz_id', quizId)
       .order('submitted_at', { ascending: false })
-      .range(0, 9999); // Ensure we get all responses, not just first 13
+      .limit(10000); // Use limit instead of range
 
     if (error) {
       console.error('Supabase error:', error);
       return NextResponse.json({ voters: [] });
     }
+
+    console.log(`Quiz ${quizId}: Fetched ${responses?.length || 0} responses from API`);
 
     if (!responses || responses.length === 0) {
       return NextResponse.json({ voters: [] });
