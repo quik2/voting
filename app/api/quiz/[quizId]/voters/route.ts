@@ -9,11 +9,13 @@ export async function GET(
   try {
     // Get all unique voters for this quiz by using DISTINCT on voter_email
     // and selecting the most recent submission per voter
+    // Use a large range to ensure we get all responses (not just the default limit)
     const { data: responses, error } = await supabase
       .from('quiz_responses')
       .select('voter_name, voter_email, submitted_at')
       .eq('quiz_id', quizId)
-      .order('submitted_at', { ascending: false });
+      .order('submitted_at', { ascending: false })
+      .range(0, 9999); // Ensure we get all responses, not just first 13
 
     if (error) {
       console.error('Supabase error:', error);

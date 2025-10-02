@@ -11,7 +11,8 @@ export async function GET(
     const { data: responses, error } = await supabase
       .from('quiz_responses')
       .select('*')
-      .eq('quiz_id', quizId);
+      .eq('quiz_id', quizId)
+      .range(0, 9999); // Ensure we get all responses
 
     if (error) {
       console.error('Supabase error:', error);
